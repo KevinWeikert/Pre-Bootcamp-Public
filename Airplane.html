@@ -7,7 +7,7 @@
     <style typee="text/css">
         #ocean{
             background-image: url("space.jpeg");
-            *width: 900px;
+            width: 900px;
             height: 700px;
         }
         .player{
@@ -22,10 +22,17 @@
             width: 88px;
             height: 90px;
         }
+        .missle{
+            position: absolute;
+            background-color: green;
+            width: 3px;
+            height: 20px;
+        }
     </style>
     <div id="ocean">
         <div id="players"></div>
         <div id="enemies"></div>
+        <div id="missles"></div>
     </div>
     <script type="text/javascript">
         var player = {
@@ -34,18 +41,37 @@
         }
 
         var enemies = [
-            {left: 100, top: 200},
-            {left: 200, top: 250},
-            {left: 300, top: 300},
-            {left: 400, top: 350},
-            {left: 500, top: 400}
+            {left: 100, top: 0},
+            {left: 200, top: 0},
+            {left: 300, top: 0},
+            {left: 400, top: 0},
+            {left: 500, top: 0}
         ]
+
+        var missles = [
+
+        ]
+
+        
 
         function drawPlayer(){
             content = "<div class='player' style='left:"+player.left+"px; top:"+player.top+"px'></div>";
             document.getElementById("players").innerHTML = content;
         }
-        drawPlayer();
+
+        function drawMissles(){
+            content = ""
+            for(var idx=0; idx<missles.length; idx++){
+                content += "<div class='missle' style='left:"+missles[idx].left+"px; top:"+missles[idx].top+"px'></div>";
+            }
+            document.getElementById("missles").innerHTML = content;
+        }
+
+        function moveMissles(){
+            for(var idx=0; idx<missles.length; idx++) {
+                missles[idx].top = missles[idx].top - 5;
+            }
+        }
 
         document.onkeydown = function(e){
             console.log(e);
@@ -61,7 +87,11 @@
             if(e.keyCode == 38 && player.top>500) {//up 
                 player.top-=10;
             }
-            drawPlayer();
+            if(e.keyCode == 32) { //missle
+                missles.push({left: (player.left+28), top: (player.top-10)});
+                missles.push({left: (player.left+150), top: (player.top-10)});
+                drawMissles();
+            }
         }
 
         function drawEnemies(){
@@ -71,7 +101,29 @@
             }
             document.getElementById("enemies").innerHTML = content;
         }
-        drawEnemies();
+
+
+        function moveEnemies(){
+            for(var idx=0; idx<enemies.length; idx++) {
+                enemies[idx].top = enemies[idx].top + 1;
+            }
+        }
+
+        function removeEnemies(){
+            if(enemies[idx.top == 700]){
+                enemies.pop();
+            }
+        }
+
+        function gameLoop(){
+            drawPlayer();
+            moveEnemies();
+            drawEnemies();
+            moveMissles();
+            drawMissles();
+            setTimeout(gameLoop, 10)
+        }
+        gameLoop()
     </script>
 </body>
 </html>
